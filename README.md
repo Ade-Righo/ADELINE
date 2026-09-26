@@ -1,54 +1,7 @@
-# ADELINE
-Adeline es un lanzador y gestor interactivo para Linux que simplifica el uso de Waydroid, automatizando diagnósticos, sockets y transferencias de archivos mediante un menú limpio y accesible.
-Se proyecta como una herramienta de código abierto en constante evolución: robusta para los usuarios experimentados que buscan optimizar su tiempo, y lo suficientemente limpia y transparente para servir de guía a quienes están aprendiendo a dominar la terminal. Un reflejo de que la tecnología debe ser una extensión de nuestra creatividad, diseñada con propósito, respeto por los datos y hecha para durar.
-
-El script comienza con la directiva inicial para Bash y verifica si se está ejecutando desde una interfaz gráfica sin una terminal activa; si es así, busca automáticamente emuladores como Konsole, Gnome-Terminal, Alacritty o Xterm para relanzarse a sí mismo en una ventana interactiva.
-
-A continuación, define la ruta de instalación global en /usr/local/bin/R-Adeline-w. Si el script no se encuentra ejecutándose desde esa ubicación o el archivo aún no existe, copia el script actual a dicha ruta de sistema y le otorga permisos de ejecución mediante sudo para que pueda ser invocado desde cualquier terminal del sistema con facilidad.
-
-Se configuran las variables de codificación internacional (LANG y LC_ALL a C.UTF-8) para garantizar que los caracteres especiales y los símbolos gráficos se rendericen correctamente sin fallos de codificación en el terminal.
-
-Se definen los códigos de color ANSI de la paleta estética (verde, azul, cian, gris, rojo, magenta y amarillo) para estructurar la interfaz visual de la consola con un estilo moderno tipo ciberespacio.
-
-El script detecta el idioma del sistema operativo mediante variables de entorno. Si comienza con inglés, configura todos los textos descriptivos, menús y mensajes de estado en inglés; de lo contrario, carga por defecto todo el diccionario de textos en español.
-
-Se define la función de validación de privilegios de administrador verificar_sudo, la cual comprueba si el usuario tiene una sesión de sudo activa. Si no la tiene, muestra un aviso de error personalizado y cancela el flujo; si la tiene, mantiene la sesión de superusuario activa en segundo plano mediante un bucle silencioso para evitar pedir la contraseña repetidamente en cada acción.
-
-La pantalla se limpia por completo y se dibuja el logotipo oficial de bienvenida de Adeline junto con la versión actual y la firma del autor.
-
-Se ejecuta una pequeña animación con puntos suspensivos para simular una sincronización de núcleos de telemetría y dar una transición fluida antes de mostrar los datos del sistema.
-
-El script analiza el rendimiento del equipo extrayendo los datos del procesador mediante los comandos top y lscpu, calculando el porcentaje de uso actual de la CPU, identificando el modelo exacto del procesador y generando una barra de progreso visual construida con bloques Unicode.
-
-Se consulta el consumo de memoria RAM utilizando el comando free, calculando el total en gigabytes, el espacio utilizado y el porcentaje general, para luego representar el uso en tiempo real mediante otra barra gráfica porcentual.
-
-Se consulta la tarjeta gráfica (GPU) instalada en el equipo utilizando el comando lspci para filtrar el controlador de video y mostrar su descripción comercial o genérica en pantalla.
-
-Se evalúa el estado del contenedor de Waydroid consultando systemctl. Si el servicio está activo, verifica si la sesión de usuario de Waydroid y su interfaz gráfica se encuentran operativas o sin ventana visual; si el contenedor está detenido, activa un modo de diagnóstico que revisa los últimos registros de errores críticos en el journalctl del sistema para mostrar al usuario la anomalía exacta encontrada.
-
-El script busca de manera inteligente la ruta donde Waydroid almacena los archivos multimedia del usuario (/media/0), probando múltiples directorios posibles en el sistema para adaptarse a distintas distribuciones. Si encuentra la ruta, muestra su ubicación y asegura permisos totales de acceso; si no existe, avisa que se generará automáticamente al realizar la primera transferencia.
-
-Se dibuja en pantalla el menú interactivo principal que enumera las cinco acciones disponibles: forzar reinicio y limpieza de sockets, mover archivos entre la PC y Waydroid, acceder al control de energía de la PC, iniciar los servicios de Waydroid o salir del sistema, solicitando al usuario que ingrese un número del 1 al 5.
-
-Si el usuario selecciona la opción 1, el script solicita permisos de administrador, detiene el contenedor de Waydroid, mata cualquier proceso huérfano relacionado, elimina los sockets de comunicación corruptos, recarga el módulo del kernel binder_linux y vuelve a iniciar tanto el contenedor como la sesión de Waydroid, comprobando mediante un bucle de intentos si el sistema respondió correctamente.
-
-Si el usuario selecciona la opción 2, verifica la existencia de la ruta multimedia de Waydroid y desplaza un submenú interno para gestionar archivos en dos direcciones: enviar archivos o carpetas desde la PC hacia directorios específicos de Waydroid (Descargas, Documentos, Imágenes o la raíz), o extraer contenido desde Waydroid hacia el directorio personal del usuario en la PC mediante un sistema de búsqueda flexible.
-
-Si el usuario selecciona la opción 3, despliega un submenú de control de energía que permite reiniciar la estación de trabajo, apagarla por completo o cancelar la operación de forma segura.
-
-Si el usuario selecciona la opción 4, solicita permisos de administrador y ejecuta de forma secuencial el arranque del servicio del contenedor, la sesión de usuario y la interfaz visual de Waydroid en segundo plano.
-
-Si el usuario selecciona la opción 5, limpia la pantalla, muestra una animación de salida y presenta un mensaje final de agradecimiento de código abierto dedicado a los usuarios de Linux y a su hija Adeline, finalizando la ejecución del script con éxito.
-
-Si el usuario introduce una opción inválida en el menú principal, muestra un mensaje de error en rojo y finaliza el ciclo operativo.
-
-Al terminar cualquiera de las acciones seleccionadas en el menú, el script se detiene y muestra un mensaje solicitando presionar la tecla Enter para salir de la ventana de la terminal de manera controlada.
-
-
 #!/bin/bash
 
 # ==============================================================================
-#                        ADELINE v0.9.8 [ Fabos ]
+# SCRIPT DE INSTALACIÓN Y LANZADOR: ADELINE v0.9.8 [ Fabos ]
 # ==============================================================================
 
 # 1. Asegurar que el script corra dentro de una ventana de terminal interactiva al hacer doble clic
@@ -513,4 +466,6 @@ case "$opcion" in
         ;;
 esac
 
-
+# Mantener la terminal abierta al terminar una acción si se ejecutó por doble clic
+echo -e "\n${GRIS}Presiona [ENTER] para salir...${RESET}"
+read
